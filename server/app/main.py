@@ -47,10 +47,12 @@ async def root():
 async def health_check():
     """Global health check endpoint."""
     api_key_configured = bool(os.getenv("OPENAI_API_KEY"))
+    mock_mode = os.getenv("MOCK_MODE", "false").lower() == "true"
     return {
         "status": "healthy",
         "service": "cofoundr-ai-server",
-        "openai_configured": api_key_configured
+        "openai_configured": api_key_configured,
+        "mock_mode": mock_mode
     }
 
 if __name__ == "__main__":

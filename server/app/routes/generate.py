@@ -36,7 +36,7 @@ gemini_model = None
 if GEMINI_AVAILABLE and os.getenv("GEMINI_API_KEY"):
     try:
         genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-        gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+        gemini_model = genai.GenerativeModel('gemini-flash-latest')
         logger.info("✅ Gemini API configured successfully")
     except Exception as e:
         logger.warning(f"⚠️ Failed to configure Gemini API: {e}")
@@ -1380,13 +1380,12 @@ async def generate_detailed_pitch(pitch_request: PitchRequest):
 @router.get("/health")
 async def health_check():
     """Health check endpoint to verify the service is running."""
-    mock_status = "enabled" if MOCK_MODE else "disabled"
     ai_provider = "gemini" if (USE_GEMINI and GEMINI_AVAILABLE) else "openai"
     
     return {
         "status": "healthy", 
         "service": "pitch-deck-generator",
-        "mock_mode": mock_status,
+        "mock_mode": MOCK_MODE,
         "ai_provider": ai_provider,
         "gemini_available": GEMINI_AVAILABLE,
         "gemini_configured": bool(os.getenv("GEMINI_API_KEY")) and GEMINI_AVAILABLE,

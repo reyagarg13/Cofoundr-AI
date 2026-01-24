@@ -28,6 +28,7 @@ function App() {
   const [targetAudience, setTargetAudience] = useState('general investors');
   const [showLanding, setShowLanding] = useState(true);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [isMockMode, setIsMockMode] = useState(false);
   const [presentationStyle, setPresentationStyle] = useState('balanced');
   const [competitorContext, setCompetitorContext] = useState('');
   const [loadingMessage, setLoadingMessage] = useState('');
@@ -57,6 +58,7 @@ function App() {
         
         if (health.status === 'healthy') {
           setServerStatus('online');
+          setIsMockMode(!!health.mock_mode);
         } else if (health.status === 'timeout') {
           setServerStatus('busy'); // Server is running but slow
         } else {
@@ -381,10 +383,10 @@ function App() {
 
   const getServerStatusIcon = () => {
     switch (serverStatus) {
-      case 'online': return '🟢';
-      case 'offline': return '🔴';
-      case 'busy': return '🟡';
-      default: return '🟡';
+      case 'online': return <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>;
+      case 'offline': return <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>;
+      case 'busy': return <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>;
+      default: return <div className="w-2.5 h-2.5 rounded-full bg-gray-400"></div>;
     }
   };
 
@@ -425,7 +427,7 @@ function App() {
                 <span className={getServerStatusColor()}>
                   {getServerStatusText()}
                 </span>
-                {serverStatus === 'online' && (
+                {serverStatus === 'online' && isMockMode && (
                   <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
                     Mock Mode
                   </span>
@@ -456,7 +458,7 @@ function App() {
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  📊 Pitch Deck Generator
+                  <span className="flex items-center"><svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>Pitch Deck Generator</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('logo-branding')}
@@ -466,7 +468,7 @@ function App() {
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  🎨 Logo & Brand Suite
+                  <span className="flex items-center"><svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" /></svg>Logo & Brand Suite</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('website-generator')}
@@ -476,7 +478,7 @@ function App() {
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  🌐 Website Generator
+                  <span className="flex items-center"><svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>Website Generator</span>
                 </button>
               </div>
             </div>
@@ -492,8 +494,9 @@ function App() {
             
             {/* Quick Start Section */}
             <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-              <h3 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
-                🚀 Try These Example Ideas
+              <h3 className="text-2xl font-semibold text-gray-900 mb-6 text-center flex items-center justify-center">
+                <svg className="w-8 h-8 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                Try These Example Ideas
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {sampleIdeas.slice(0, 6).map((sampleIdea, index) => (
@@ -502,7 +505,10 @@ function App() {
                     onClick={() => handleSampleClick(sampleIdea)}
                     className="text-left p-4 text-sm text-gray-700 bg-gradient-to-br from-gray-50 to-blue-50 hover:from-blue-50 hover:to-indigo-50 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-200 hover:shadow-md transform hover:-translate-y-1"
                   >
-                    <div className="font-medium text-blue-600 mb-1">💡 Startup Idea</div>
+                    <div className="font-medium text-blue-600 mb-1 flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                      Startup Idea
+                    </div>
                     {sampleIdea}
                   </button>
                 ))}
@@ -520,8 +526,9 @@ function App() {
                 {/* Left Column - Input */}
                 <div className="space-y-6" ref={formRef}>
                   <div className="bg-white rounded-xl shadow-lg p-6 card-shadow">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                  ✨ Describe Your Startup Idea
+                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                  Describe Your Startup Idea
                 </h2>
                 
                 <div className="space-y-4">
@@ -686,9 +693,9 @@ function App() {
                           <span>Generating...</span>
                         </div>
                       ) : serverStatus === 'busy' ? (
-                        `⏳ Generate ${generateDetailed ? 'Detailed ' : ''}Pitch Deck (Server Busy)`
+                        <span className="flex items-center justify-center"><svg className="w-5 h-5 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Generate {generateDetailed ? 'Detailed ' : ''}Pitch Deck (Server Busy)</span>
                       ) : (
-                        `🚀 Generate ${generateDetailed ? 'Detailed ' : ''}Pitch Deck`
+                        <span className="flex items-center justify-center"><svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Generate {generateDetailed ? 'Detailed ' : ''}Pitch Deck</span>
                       )}
                     </button>
                     
@@ -704,8 +711,9 @@ function App() {
 
               {/* Sample Ideas */}
               <div className="bg-white rounded-xl shadow-lg p-6 card-shadow">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  💡 Need Inspiration? Try These Ideas:
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                  Need Inspiration? Try These Ideas:
                 </h3>
                 <div className="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
                   {sampleIdeas.map((sampleIdea, index) => (
@@ -725,20 +733,31 @@ function App() {
             <div className="space-y-6">
               <div className="bg-white rounded-xl shadow-lg p-6 card-shadow">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900">
-                    📊 Generated Pitch Deck
+                  <h2 className="text-xl font-semibold text-gray-900 flex items-center">
+                    <svg className="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    Generated Pitch Deck
                   </h2>
                   {isValidOutput && (
                     <div className="flex flex-wrap gap-2">
                       <button
                         onClick={copyToClipboard}
-                        className={`px-3 py-1 text-sm rounded-md transition-all duration-200 ${
+                        className={`px-3 py-1 text-sm rounded-md transition-all duration-200 flex items-center ${
                           copySuccess 
                             ? 'bg-green-100 text-green-700' 
                             : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                         }`}
                       >
-                        {copySuccess ? '✓ Copied!' : '📋 Copy'}
+                        {copySuccess ? (
+                          <>
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                            Copied!
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                            Copy
+                          </>
+                        )}
                       </button>
                       
                       {/* PDF Download Button */}
@@ -757,35 +776,38 @@ function App() {
                             <span>Generating PDF...</span>
                           </span>
                         ) : (
-                          '📥 Download PDF'
+                          <span className="flex items-center"><svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>Download PDF</span>
                         )}
                       </button>
                       
                       <button
                         onClick={downloadAsTxt}
-                        className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors"
+                        className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors flex items-center"
                       >
-                        💾 Download TXT
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        Download TXT
                       </button>
                       <button
                         onClick={shareViaEmail}
-                        className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors"
+                        className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors flex items-center"
                       >
-                        📧 Share
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                        Share
                       </button>
                       
                       {/* Regenerate with different styles */}
                       <div className="relative group">
-                        <button className="px-3 py-1 text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-md transition-colors">
-                          🔄 Try Different Style
+                        <button className="px-3 py-1 text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-md transition-colors flex items-center">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                          Try Different Style
                         </button>
                         <div className="absolute right-0 top-8 hidden group-hover:block bg-white shadow-lg rounded-lg border z-10 min-w-48">
                           {[
-                            { key: 'data-driven', label: '📊 Data-Driven', desc: 'Focus on metrics & ROI' },
-                            { key: 'storytelling', label: '📖 Storytelling', desc: 'Emotional & narrative' },
-                            { key: 'technology-focused', label: '🔧 Tech-Focused', desc: 'Innovation & IP' },
-                            { key: 'market-opportunity', label: '🎯 Market-Driven', desc: 'Timing & disruption' },
-                            { key: 'problem-solving', label: '🛠️ Problem-Solving', desc: 'Practical solutions' }
+                            { key: 'data-driven', label: 'Data-Driven', desc: 'Focus on metrics & ROI' },
+                            { key: 'storytelling', label: 'Storytelling', desc: 'Emotional & narrative' },
+                            { key: 'technology-focused', label: 'Tech-Focused', desc: 'Innovation & IP' },
+                            { key: 'market-opportunity', label: 'Market-Driven', desc: 'Timing & disruption' },
+                            { key: 'problem-solving', label: 'Problem-Solving', desc: 'Practical solutions' }
                           ].filter(style => style.key !== presentationStyle).map(style => (
                             <button
                               key={style.key}
@@ -806,9 +828,11 @@ function App() {
                 <div className="min-h-[500px]">
                   {!output && !loading ? (
                     <div className="flex flex-col items-center justify-center h-96 text-gray-500">
-                      <div className="text-6xl mb-4">🎯</div>
-                      <h3 className="text-lg font-medium mb-2">Ready to Create Your Pitch?</h3>
-                      <p className="text-center text-gray-400">
+                      <div className="text-blue-500 mb-6">
+                        <svg className="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" /></svg>
+                      </div>
+                      <h3 className="text-xl font-medium mb-3 text-gray-700">Ready to Create Your Pitch?</h3>
+                      <p className="text-center text-gray-400 max-w-sm">
                         Enter your startup idea on the left and click "Generate Pitch Deck" to get started!
                       </p>
                     </div>
@@ -822,7 +846,7 @@ function App() {
                       {isValidOutput && (
                         <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
                           <div className="flex items-center space-x-2">
-                            <span className="text-green-600">✅</span>
+                            <span className="text-green-600"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
                             <span className="text-sm font-medium text-green-800">
                               Pitch deck generated successfully!
                             </span>
@@ -839,36 +863,37 @@ function App() {
 
               {/* Tips */}
               <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  💡 Pro Tips for Better Results
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                  Pro Tips for Better Results
                 </h3>
                 <ul className="space-y-2 text-sm text-gray-700">
                   <li className="flex items-start space-x-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
+                    <span className="text-green-600 mt-0.5"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg></span>
                     <span>Be specific about your target market and the problem you're solving</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
+                    <span className="text-green-600 mt-0.5"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg></span>
                     <span>Choose a presentation style that matches your audience preferences</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
+                    <span className="text-green-600 mt-0.5"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg></span>
                     <span>Mention competitors to get better positioning and differentiation</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
+                    <span className="text-green-600 mt-0.5"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg></span>
                     <span>Select your business model for more targeted revenue strategies</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
+                    <span className="text-green-600 mt-0.5"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg></span>
                     <span>Try different settings to get varied perspectives on your idea</span>
                   </li>
                 </ul>
                 
-                {serverStatus === 'online' && (
+                {serverStatus === 'online' && isMockMode && (
                   <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                     <div className="flex items-center space-x-2 mb-2">
-                      <span className="text-blue-600">ℹ️</span>
+                      <span className="text-blue-600"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>
                       <span className="text-sm font-medium text-blue-800">Demo Mode Active</span>
                     </div>
                     <p className="text-xs text-blue-700">
